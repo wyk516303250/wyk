@@ -1,0 +1,1325 @@
+﻿ 					附录四：Android知识点汇总
+1、怎么实现通知栏到聊天界面的跳转?
+第一步是：将fragment所绑定的activity的启动模式设置为：  android:launchMode="singleTask"
+    第二步：在该activity中添加如下方法，监听当点击了通知栏，intent进行跳转时的事件，
+第三步：在接收通知消息的函数中设置如下代码
+-----------------------------------------------------
+Intent intent = new Intent(Intent.ACTION_MAIN);
+ 
+intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET); //这样可以清掉所有历史activity 
+
+
+intent.addCategory(Intent.CATEGORY_HOME);
+ 
+startActivity(intent); 
+new一个新的Intent然后用上述方法即可实现跳转。
+
+---------------------
+——————————————————————————————————————————————
+2、聊天界面左右分隔怎么实现，怎么实现优化使其不出现错位?
+我们可以在adapter里对消息的发放者进行判断，如果不是本人发送的那就设置靠左，否则设置靠右，
+具体实现如下： 
+封装消息实体类时，将消息的发送者类型作为Boolean类型存入。
+在适配数据时，准备两种item_layout布局文件，一种用于别人的信息展示，另一种用于自己的信息。
+getView方法加载布局文件之前对消息的发放者进行判断，如果是本人发送，则加载靠右的布局，否则则使用靠左的布局文件，从而实现动态的位置改变
+
+---------------------
+
+——————————————————————————————————————————————
+3、视频，音频的上传?
+Android的视频音频上传主要就是通过java的socket来进行与服务器的交流，socket通信可以指定一个服务器的地址，然后可以通过io流实现视频音频的上传。
+——————————————————————————————————————————————
+4、http协议和soap协议的区别?
+HTTP(超文本传输协议)是利用TCP在两台电脑(通常是Web服务器和客户端)之间传输信息的协议。
+SOAP的前身是RPC, 就是远程呼叫处理的协议，这个协议安全性不是很好
+SOAP协议和HTTP协议一样，都是底层的通信协议，只是请求包的格式不同而已，SOAP包是XML格式的
+——————————————————————————————————————————————
+5、http和https的区别?
+https协议需要到ca申请证书，一般免费证书很少，需要交费。 
+http是超文本传输协议，信息是明文传输，https 则是具有安全性的ssl加密传输协议 
+http和https使用的是完全不同的连接方式用的端口也不一样,前者是80,后者是443。 
+http的连接很简单,是无状态的 
+HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议 要比http协议安全 
+
+---------------------
+——————————————————————————————————————————————
+6、listview的逐行显示?
+可以将每一条数据先加载到list集合中，然后通过适配器将每一条数据加载到listview中实现listview对数据的逐行显示。
+——————————————————————————————————————————————
+7、edittext中文字的下划线效果?
+自定义一个·EditText的派生类，LineEditText，在LineEditText类的OnDraw函数中实现画一条下划线的功能
+——————————————————————————————————————————————
+8、activity以及service的生命周期?
+activity 
+onCreate(Bundle savedInstanceState) 第一次创建时调用 
+onStart()   被用户可见时调用 
+
+onRestart() 当Activity处于stop状态又被重新启动时调用 
+onResume() 当获得焦点即可与用户交互时调用 
+onPause()  当失去焦点时调用
+ 
+onStop()   当不可见时调用 
+onDestroy()  当销毁时调用
+
+---------------------
+service：startService：oncreate（）--onStartCommand（）--startService（）--onDestory（）
+	bindServoce：onCreate（）--onBind（）--onUnbind（）--onDestory,05
+——————————————————————————————————————————————
+9、安卓系统的理解，优缺点?
+Android一词的本义指“机器人”，同时也是Google于2007年11月5日 宣布的基于Linux平台的开源手机操作系统的名称，该平台由操作系统、中间件 
+、用户界面和应用软件组成。
+优点：开放性，挣脱束缚，丰富硬件，Google应用 
+缺点：版本过多，升级过快 
+用户体验不一致 
+——————————————————————————————————————————————
+10、sim卡EF文件是什么?
+SIM卡里的所有文件按树来组织: 
+
+1>主文件MF(Master File)——每一块SIM卡只有一个唯一的主文件, 其他所有文件都是它的子孙, 主文件只有文件头,里面存放着整个SIM卡的控制和管理信息 
+
+2>专用文件DF(Dedicated File)——也是只有一个文件头, 里面存放着整个目录的管理控制信息, 专用文件相当于一个目录的根. 
+
+3>基本文件EF(Elementary File)——既有文件头,也有文件体, 文件头存放该文件的位置和控制信息, 文件体存放真正的数据, 
+                                                       整个SIM卡中只有基本文件有文件体, 也只有基本文件才用来存放数据.
+
+---------------------
+——————————————————————————————————————————————
+11、常用设计模式及应用场景?
+1) 单例模式。应用场景：如果希望在系统中某个类的对象只能存在一个，单例模式是最好的解决方案。
+2) 工厂模式。
+	下面是使用工厂模式的两种情况：
+		a. 在编码时不能预见需要创建哪种类的实例。
+		b. 系统不应依赖于产品类实例如何被创建、组合和表达的细节。
+3) 策略模式。
+a. 一件事情，有很多方案可以实现。
+b. 我可以在任何时候，决定采用哪一种实现。
+c. 未来可能增加更多的方案。
+d. 策略模式让方案的变化不会影响到使用方案的客户。
+4) 观察者模式。
+a. 对一个对象状态的更新，需要其他对象同步更新，而且其他对象的数量动态可变。
+b. 对象仅需要将自己的更新通知给其他对象而不需要知道其他对象的细节。
+——————————————————————————————————————————————
+12、广播如何调用，有什么方式，各自的、区别，实现广播的意图是什么，哪里用到?
+首先写一个类要继承BroadcastReceiver
+两种注册类型的区别是：
+
+第一种:在清单文件中声明,添加
+
+
+， 第二种使用代码进行注册
+1)第一种是常驻型（静态注册），也就是说当应用程序关闭后，如果有信息广播来，程序也会被系统调用自动运行。
+
+
+2)第二种不是常驻型广播（动态注册），也就是说广播跟随程序的生命周期。
+
+
+
+
+注册的方法有两种，一种是静态注册，一种是动态注册。
+
+
+动态注册优点：在 Android
+ 的广播机制中，动态注册的优先级是要高于静态注册优先级的，因此在必要的情况下，我们是需要动态注册广播接收器的。
+
+静态注册优点：动态注册广播接收器还有一个特点，就是当用来注册的 Activity 关掉后，广播也就失效了。
+同时反映了静态注册的一个优势，就是无需担忧广播接收器是否被关闭，只要设备是开启状态，广播接收器就是打开着的。
+主要是用来监听系统的各个行为的
+
+——————————————————————————————————————————————
+13、android系统架构?
+Linux核心层，应用程序层，应用程序框架层，系统运行库
+——————————————————————————————————————————————
+14、Android的四大组件是什么？它们的作用是什么?
+Activity、Service、ContentProvider、BroadcastReceiver
+作用：
+Activity：Activity就是我们应用程序的界面，主要用来跟我们的用户进行交互的，比如一个文本框，按钮这些就是显示在Activity上的，
+并且可以接收数据，传递数据到后台，然后再显示出来。
+Service：Service我们是看不见的，对于绝大部分的数据的处理，业务的处理都是通过Service来完成的。
+ContentProvider：ContentProvider类似于我们的档案馆，里面存放了我们的各种数据，例如通讯录中的信息等，
+这个组件就是运行程序对其进行访问，然后得到里面的数据。
+BroadcastReceiver：BroadcastReceiver组件是广播接收器，主要是用来监听系统的各个行为的，例如当电量不足的时候会给我们发送一条广播信息。
+——————————————————————————————————————————————
+15、Activity生命周期？保存activity的一些信息在哪个生命周期方法中?
+
+onCreate()--->onStart()---->onReStart()--->onResume()--->onPause()--->onStop()--->onDestory()
+
+onResume（）
+——————————————————————————————————————————————
+16、Activity的 onSaveInstanceState() 和 onRestoreInstanceState()?
+Android为我们提供了onSaveInstanceState(Bundle outState)和onRestoreInstanceState(Bundle savedInstanceState)用于保存和恢复数据。
+总结下，onSaveInstanceState(Bundle outState)会在以下情况被调用： 
+
+1、当用户按下HOME键时。 
+2、从最近应用中选择运行其他的程序时。 
+3、按下电源按键（关闭屏幕显示）时。 
+
+4、从当前activity启动一个新的activity时。 
+5、屏幕方向切换时(无论竖屏切横屏还是横屏切竖屏都会调用)。
+onRestoreInstanceState(Bundle savedInstanceState)只有在activity确实是被系统回收，重新创建activity的情况下才会被调用。
+——————————————————————————————————————————————
+17、activity在屏幕旋转时的生命周期?
+onResume()--->onPause()--->on Save Instance State(Bundle bundle)--->onStop()--->onDestory()
+——————————————————————————————————————————————
+18、Android中asset文件夹和raw文件夹区别?
+res/raw和assets的相同点：
+
+1.两者目录下的文件在打包后会原封不动的保存在apk包中，不会被编译成二进制。
+
+*res/raw和assets的不同点：
+1.res/raw中的文件会被映射到R.java文件中，访问的时候直接使用资源ID即R.id.filename；assets文件夹下的文件不会被映射到R.java中，访问的时候需要AssetManager类。
+2.res/raw不可以有目录结构，而assets则可以有目录结构，也就是assets目录下可以再建立文件夹
+
+*读取文件资源：
+
+1.读取res/raw下的文件资源，通过以下方式获取输入流来进行写操作
+
+InputStream is = getResources().openRawResource(R.id.filename);  
+2.读取assets下的文件资源，通过以下方式获取输入流来进行写操作
+
+AssetManager am = null;  
+am = getAssets();  
+InputStream is = am.open("filename");  
+——————————————————————————————————————————————
+19、Android中的五种存储方式及其应用场景?
+文件存储
+Shared Preferences
+SQLite数据库存储
+Content Provider
+网络存储
+------------
+第一种： 使用SharedPreferences存储数据
+　　适用范围：保存少量的数据，且这些数据的格式非常简单：字符串型、基本类型的值。比如应用程序的各种配置信息（如是否打开音效、是否使用震动效果、小游戏的玩家积分等），解锁口 令密码等
+第二种： 文件存储数据
+　　可以在设备本身的存储设备或者外接的存储设备中创建用于保存数据的文件。同样在默认的状态下，文件是不能在不同的程序间共享。
+第三种：SQLite存储数据，每个应用都可以方便的使用它，或者更确切的说，Android完全依赖于SQLite数据库，它所有的系统数据和用到的结构化数据都存储在数据库中。
+第四种：ContentProvider，由于数据通常在各应用间的是互相私密的，所以此存储方式较少使用，但是其又是必不可少的一种存储方式。例如音频，视频，图片和通讯录，一般都可以采用此种方式进行存储。
+——————————————————————————————————————————————
+20、什么是ANR 如何避免它？（Android线程间的通信方式 ）?
+ANR，全称为Application Not Responding。在Android 中，如果你的应用程序有一段时间没有响应，系统会向用户显示一个对话框，这个对话框称作应用程序无响应对话框。
+解决方案：
+1、将所有耗时操作，比如访问网络，Socket 通信，查询大量SQL 语句，复杂逻辑计算等都放在子线程中去，然后通过handler.sendMessage、runonUITread、AsyncTask 等方式更新UI，以确保用户界面操作的流畅度。
+  
+  2、如果耗时操作需要让用户等待，那么可以在界面上显示进度条。
+
+---------------------
+
+——————————————————————————————————————————————
+21、listview优化策略?
+答：1)、对convetView进行判空，是当convertView不为空的时候直接重新使用convertView
+从而减少了很多不必要的View的创建
+2)定义一个ViewHolder，将convetView的tag设置为ViewHolder,不为空时重新使用即可
+3)、当ListView加载数据量较大时可以采用分页加载和图片异步加载
+——————————————————————————————————————————————
+22、ListView分页加载实现思路?
+实现OnScrollListener 接口重写onScrollStateChanged 和onScroll方法，使用onscroll方法实现”滑动“后处理检查是否还有新的记录，
+如果有，调用 addFooterView，添加记录到adapter, adapter调用 notifyDataSetChanged 更新数据;如果没有记录了，
+把自定义的mFooterView去掉。使用onScrollStateChanged可以检测是否滚到最后一行且停止滚动然后执行加载 
+——————————————————————————————————————————————
+23、ListView图片异步加载实现思路?
+1.先从内存缓存中获取图片显示（内存缓冲）
+2.获取不到的话从SD卡里获取（SD卡缓冲，，从SD卡获取图片是放在子线程里执行的，否则快速滑屏的话会不够流畅）
+3.都获取不到的话从网络下载图片并保存到SD卡同时加入内存并显示（视情况看是否要显示
+——————————————————————————————————————————————
+24、Intent的原理、作用、可以传递哪些类型的参数?
+答：intent是连接Activity, Service, BroadcastReceiver, ContentProvider四大组件的信使,，可以传递八种基本数据类型以及string, Bundle类型，以及实现了Serializable或者Parcelable的类型。
+Intent可以划分成显式意图和隐式意图。
+显式意图：调用Intent.setComponent()或Intent.setClass()方法明确指定了组件名的Intent为显式意图，显式意图明确指定了Intent应该传递给哪个组件。
+隐式意图：没有明确指定组件名的Intent为隐式意图。 Android系统会根据隐式意图中设置的动作(action)、类别(category)、数据（URI和数据类型）找到最合适的组件来处理这个意图
+——————————————————————————————————————————————
+25、如何实现屏幕分辨率的自适应（布局、九线图、目录）?
+答: 最好可以通过权重(layout_weight)的方式来分配每个组件的大小，也可以通过具体的像素(dip)来确定大小。
+尽量使用Relativelayout  。
+已知应用支持平台设备的分辨率,可以提供多个layout_320*480  ...
+drawable-hdpi,drawable-mdpi,drawable-ldpi分别代表分辨率为480*800,360*480,240*360, 放置图片大小相差1.5倍
+最后还需要在AndroidManifest.xml里添加下面一段，没有这一段自适应就不能实现：
+android:largeScreens="true"
+android:normalScreens="true"
+  android:anyDensity = "true"/>
+在标签和 标签之间添加上面那段代码。即可。
+备注：三者的解析度不一样，就像你把电脑的分辨率调低，图片会变大一样，反之分辨率高，图片缩小
+还可以通过.9.png实现图片的自适应
+——————————————————————————————————————————————
+26、简述Android中的IPC机制?
+IPC（Inter-Process Communication，进程间通信）,aidl是 Android Interface definition language的缩写，它是一种android内部进程通信接口的描述语言，通过它我们可以定义进程间的通信接口.编译器可以通过扩展名为aidl的文件生成一段代码，通过预先定义的接口达到两个进程内部通信进程的目的.
+BroadcastReceiver也可以实现进程间通信
+ContentProvider 提供进程间数据共享
+——————————————————————————————————————————————
+27、Android程序入口如何判断?
+action节点中的android.intent.action.MAIN表明它所在的Activity是整个应用程序的入口点
+——————————————————————————————————————————————
+28、android哪几种方式访问网络?
+HttpURLConnection
+HttpClient方式（HttpGet和HttpPost类）
+——————————————————————————————————————————————
+29、说说HttpClient的通信过程?
+1.生成请求对象（HttpGet get，HttpPost post）
+2.生成客户端对象 HttpClient client
+3.执行请求接收相应 HttpResponse response = client.execute(post)
+                     HttpEntity entity = response.getEntity()
+4.得到数据流
+InputStream inputStream = entity.getContent();
+——————————————————————————————————————————————
+30、移动互联数据交互格式有哪些及其区别?
+移动互联数据交互格式有XML和JSON
+1.JSON和XML的数据可读性基本相同
+2.JSON和XML同样拥有丰富的解析手段
+3.JSON相对于XML来讲，数据的体积小
+4.JSON与JavaScript的交互更加方便
+5.JSON对数据的描述性比XML较差
+6.JSON的速度要远远快于XML
+——————————————————————————————————————————————
+31、版本更新的实现思路?
+答：在服务器相应URL上有版本文件, 客户端同时存储该应用当前版本号  (SharedPreferences/Sqlite), 每次打开应用,去检测服务器版本号与本地版本号是否一致,如果不一 致,则自定义对话框提示是否下载更新
+——————————————————————————————————————————————
+32、播放视频有哪些实现方式?
+答：1.使用系统自带的播放器来播放，指定Action为ACTION_VIEW,Data为Uri，Type为其MIME类型。
+//调用系统自带的播放器     
+          Intent intent = new Intent(Intent.ACTION_VIEW);   
+          intent.setDataAndType(uri, "video/mp4");   
+          startActivity(intent);
+2. 使用VideoView组件来播放, 可以结合MediaController来实现播控, 只是不能随意更改视频的大小及位置。
+3. 使用MediaPlayer和SurfaceView来实现，这种方式很灵活,可以自定义视频播放的大小和位置。
+——————————————————————————————————————————————
+33、NDK开发流程？（JNI运行原理）?
+答: NDK应用的开发流程(在应用中定义本地接口(native), 编译成.h头文件,交由C程序员实现,将.c实现通过NDK编译成.so动态链接库,导入项目中libs/armeabi,代码中调用该本地接口)
+应用场景: 音频,视频解码,拍摄车牌号,识别车牌号
+——————————————————————————————————————————————
+34、如何实现一键退出?
+答：定义一个类继承Application，定义一个集合存放所有的activity，
+定义一个添加的方法，再写一个退出的方法，使用for循环全部调用finish方法，然
+后在每个Activity的onCreate方法中调用自定义类里的添加方法，然后在需要使用一
+键退出的地方调用类中的退出方法即可。
+——————————————————————————————————————————————
+35、AndroidManifest.xml清单文件<Activity>标签中属性的含义?
+android:excludeFromRecents="true" android:screenOrientation="portrait"     android:configChanges="orientation|locale"的含义
+答: android:excludeFromRecents表示是否可被显示在最近打开的activity列表里,true表示否,false表示是
+android:screenOrientation表示activity显示的模式, 一般用来设置activity横屏显示(horizontal)或竖屏显示(portrait)
+android:configChanges=[oneormoreof:"mcc""mnc""locale""touchscreen""keyboard""keyboardHidden""navigation""orientation""fontScale"]
+是当所指定属性(Configuration Changes)发生改变时，通知程序调用 onConfigurationChanged()函数,比如orientation屏幕方向发生改变,locale语言环境发生改变时
+——————————————————————————————————————————————
+36、如何将一个Activity设置成窗口的样式?
+答：在清单文件AndroidManifest.xml中相应的标签内设置属性android:theme=”@android:style/Theme.Dialog”
+——————————————————————————————————————————————
+37、谈谈UI中， Padding和Margin有什么区别,gravity与layout_gravity的区别?
+答：Padding 用来指定组件内的内容距离组件边界的距离;
+    Margin用来指定控件与控件之间的距离
+Gravity用来指定组件内的内容相对于组件本身的位置
+Layout_gravity用来指定组件相对于其父组件的位置
+——————————————————————————————————————————————
+38、Android SDK 6.0;7.0;8.0新特性?
+Android 6.0引入了动态权限管理，将标记为危险的权限从安装时权限(Install Time Permission)模型移动到运行时权限模型（Runtime Permissions）
+Android7.0：在安全性上，Android N加入了全新安全性能，其中包括基于文件的数据加密。谷歌移动版Chrome能识别恶意网站。
+
+Android N可以进行无缝更新，与Chromebook一样，用户将不再需要下载安装，也不再需要进行重启。
+
+在效率提升上，Android N可以自动关闭用户较长时间未使用的应用程序。在通知上新增了直接回复功能，并支持一键全部清除功能
+（1）分屏多任务（2）全新下拉快捷开关页（3）新通知消息（4）夜间模式（5）流量保护模式
+（6）全新设置样式（7）改进的Doze休眠机制（8）系统级电话黑名单功能（9）菜单键快速应用切换
+（10）对于开发的影响
+Android8.0：　彻底重新设计了表情符号，弃用了Blobs表情包，重新使用传统圆形表情符号。
+　1、Android 8.0 大幅提升了开机速度
+2、锁屏界面变化很小，字号缩小了一圈，为锁屏壁纸和通知等内容留出更多视觉空间
+3、桌面更新体现在「可自定义图标的形状」　
+4、引入了「通知圆点」功能，但不会显示具体通知数量，只会在图标右上角显示一个圆点
+5、长按图标，能看到图标菜单和通知概览
+6、全新的状态栏
+7、通知栏变得更加可爱
+8、在展开或缩起所有通知时，最左边的小图标会有可爱的动画出现　
+9、设置界面相对与 Android 7.1.2 引入了层级概念
+10、系统应用的默认图标统一更新为绿色圆形
+11、安全性选项中，Android 8.0 引入了「Google Play 保护机制」
+12、每个 APP 的「安装未知应用」功能将默认被限制
+13、终于可以直接在铃声设置界面添加第三方手机铃声　
+14、画中画模式
+15、Autofill 功能
+16、在 Android 8.0 的开发者选项中，还出现了蓝牙音频解码器加入了由索尼提供的 LDAC 无线音效技术
+17、智能文本选择18、Pixel 自带相机中增加了双击放大功能
+19、Emoji 表情也从之前的果冻变成了圆形
+20、 Android 8.0 正式版的彩蛋跟第四个开发者预览版没有区别
+　　
+---------------------
+——————————————————————————————————————————————
+39、android客户端如何实现自动登录?
+答: 通过SharedPreferences存储用户名,密码,当存储不为空时实现自动登录功能
+——————————————————————————————————————————————
+40、请介绍android中常见的五种布局?
+第一种：帧布局（框架布局）FrameLayout
+第二种：线性布局LinearLayout
+第三种：绝对布局AbsoluteLayout
+第四种：相对布局RelativeLayout
+第五种：表格布局TableLayout，
+第六种：网格布局 GridLayout
+——————————————————————————————————————————————
+41、android中的动画有那几个类？他们的特点和区别是什么?
+两种，一种是补间动画，还有一种是帧动画，帧动画类似于放电影，通过播放已经排列放好的图片来实现。
+补间动画的实现定义开始和结束，中间由系统计算得出效果有透明，位移，放大缩小等等。
+自定义录音或者进度条过程，会应用到帧动画，补间动画，一般用于应用的欢迎界面。
+——————————————————————————————————————————————
+42、activity的启动模式有哪些？是什么含义?
+standard标准模式、
+singleTop该模式下，在同一个task中，如果存在该Activity的实例，并且该Activity实例位于栈顶(即，该Activity位于前端)、
+singleTask只容许有一个包含该Activity实例的task存在！、singleInstance单一实例
+——————————————————————————————————————————————
+43、activity和task有关的intent启动方式有哪些？其含义是?
+FLAG_ACTIVITY_NEW_TASK 如果设置，这个Activity会成为历史stack中一个新Task的开始。
+FLAG_ACTIVITY_CLEAR_TOP 
+如果设置，并且这个Activity已经在当前的Task中运行，因此，不再是重新启动一个这个Activity的实例，而是在这个Activity上方的所有Activity都将关闭，然后这个Intent会 作为一个新的Intent投递到老的Activity（现在位于顶端）中。
+FLAG_ACTIVITY_RESET_TASK_IF_NEEDED 
+如果设置这个标志，这个activity不管是从一个新的栈启动还是从已有栈推到栈顶，它都将以the front door of the task的方式启动
+FLAG_ACTIVITY_SINGLE_TOP
+如果设置，当这个Activity位于历史stack的顶端运行时，不再启动一个新的
+——————————————————————————————————————————————
+44、如何启用Service,如何停用Service?
+可以通过在activity中 设置事件 。当事件出发时 利用intent
+Intent intent=new Intent(MainActivity.this, ServiceDemo.class);
+startService(intent); 启动
+stopService(intent); 停用
+——————————————————————————————————————————————
+45、说明Handler机制的原理?
+Handler本身只负责发送和处理接收到的消息，其背后有一个消息循环为它管理和提供消息。 
+Message Queue是管理着Message链表；而Looper是消息循环的主体，负责循环从MessageQueue中获取需要处理的新消息并向Handler输送。 
+——————————————————————————————————————————————
+46、什么情况下会导致Force Close？如何避免？能否捕获导致的异常?
+抛出运行时异常时就会导致Force Close，比如空指针、数组越界、类型转换异常等等。
+ 
+捕获：可以通过logcat查看抛出异常的代码出现的位置，然后到程序对应代码中进行修改。
+ 
+避免：编写程序时，要思维缜密，在可能出现异常的地方都作相应的处理，增强程序的健壮性。
+——————————————————————————————————————————————
+47、请介绍一下ContentProvider是如何实现数据共享的?
+ Android提供了ContentProvider，一个程序可以通过实现一个ContentProvider的抽象接口将自己的数据完全暴露出去，而且ContentProviders是以类似数据库中表的方式将数据暴露，也就是说ContentProvider就像一个“数据库”。那么外界获取其提供的数据，也就应该与从数据库中获取数据的操作基本一样，只不过是采用URI来表示外界需要访问的“数据库”。外部访问通过ContentResolver去访问并操作这些被暴露的数据。
+——————————————————————————————————————————————
+48、Service 和 Thread 的区别?
+1.服务不是单一的进程。服务没有自己的进程，应用程序可以不同，服务运行在相同的进程中。
+
+2.服务不是线程。可以在线程中工作。
+
+一.在应用中，如果是长时间的在后台运行，而且不需要交互的情况下，使用服务。
+
+同样是在后台运行，不需要交互的情况下，如果只是完成某个任务，之后就不需要运行，而且可能是多个任务，需要长时间运行的情况下使用线程。
+
+二.如果任务占用CPU时间多，资源大的情况下，要使用线程
+——————————————————————————————————————————————
+49、如何避免OOM 异常?
+1、图片过大导致 OOM：
+解决方法：方法 1： 等比例缩小图片方法 2：对图片采用软引用，及时地进行 recyle()操作
+2、界面切换导致 OOM
+3、查询数据库没有关闭游标
+4、构造 Adapter 时，没有使用缓存的 convertView
+5、Bitmap 对象不再使用时调用 recycle()释放内存
+6、其他
+Android 应用程序中最典型的需要注意释放资源的情况是在 Activity 的生命周期中，在 onPause()、onStop()、onDestroy()方法中需要适当的释放资源的情况。
+——————————————————————————————————————————————
+50、IntentService有何优点?
+　* Acitivity的进程，当处理Intent的时候，会产生一个对应的Service
+　　* Android的进程处理器现在会尽可能的不kill掉你
+　　* 非常容易使用
+——————————————————————————————————————————————
+51、如何退出Activity？如何安全退出已调用多个Activity?
+单一的Activity调用finish()方法即可。如果是多个Activity，我们可以定义一个活动集合类，对所有的活动进行管理。
+实现创建的时候将Activity缓存在List中，销毁的时候从List中移除。按退出按钮，则遍历整个List将Activity一一销毁。
+
+---------------------
+
+
+——————————————————————————————————————————————
+52、AIDL的全称是什么？如何工作？能处理哪些类型的数据？
+AIDL：Android Interface Definition Language,即Android接口定义语言。
+
+Android系统中的进程之间不能共享内存，因此，需要提供一些机制在不同进程之间进行数据通信
+
+建立AIDL服务要比建立普通的服务复杂一些，具体步骤如下：
+（1）在Eclipse Android工程的Java包目录中建立一个扩展名为aidl的文件。该文件的语法类似于Java代码，但会稍有不同。
+（2）如果aidl文件的内容是正确的，ADT会自动生成一个Java接口文件（*.java）。
+（3）建立一个服务类（Service的子类）。
+（4）实现由aidl文件生成的Java接口。
+（5）在AndroidManifest.xml文件中配置AIDL服务，尤其要注意的是，<action>标签中android:name的属性值就是客户端要引用该服务的ID，也就是Intent类的参数值。
+——————————————————————————————————————————————
+53、请解释下Android程序运行时权限与文件系统权限的区别?
+要区分apk运行时的拥有的权限与在文件系统上被访问（读写执行）的权限两个概念：（一）linux文件系统上的权限 
+（二）Android的权限规则 （1)Android中的apk必须签名 
+（2）基于UserID的进程级别的安全机制          （3）默认apk生成的数据对外是不可见的
+（4）AndroidManifest.xml中的显式权限声明     （5）权限继承/UserID继承
+——————————————————————————————————————————————
+54、事件分发机制?
+
+1.2 事件分发的本质
+答：将点击事件（MotionEvent）向某个View进行传递并最终得到处理
+1.3 事件在哪些对象之间进行传递？
+答：Activity、ViewGroup、View
+一个点击事件产生后，传递顺序是：Activity（Window） -> ViewGroup -> View
+1.4 事件分发过程由哪些方法协作完成？
+答：dispatchTouchEvent() 、onInter cept TouchEvent()和onTouchEvent()
+——————————————————————————————————————————————
+55、android屏幕适配  （原理）?
+px = dp * metrics.density和px = sp * metrics.scaledDensity。根据google官方建议，我们主要都是用dp和sp,而这两个单位，最后都会转化为px(像素)
+——————————————————————————————————————————————
+56、Android dvm的进程和Linux的进程, 应用程序的进程是否为同一个概念?
+Dalvik虚拟机允许多个instance的存在。实际上android中的每一个app都是运行在自己VM实例之中(沙盒)。每一个VM实例在linux中又是一个单独的进程，所以可以认为是同一个概念。运行在自己的DVM进程之中，不同的app不会相互干扰，且不会因为一个DVM的崩溃导致所有的app进程都崩溃。
+
+---------------------
+不是
+
+——————————————————————————————————————————————
+57、一条最长的短信息约占多少byte?
+手机短信的长度是由编码决定的，根据国际标准，每条短信最多发送1120位。
+如果发送纯英文字符，由于英文ASCII采用7位编码，所以1120位的限额可以传送1120÷7=160个字符。
+
+一旦传送的字符中包含中文、日文、韩文等双字节字符，不论中文还是西文，不论全角还是半角，都必须采用2个字节的8位编码，因此1120÷8÷2=70个字符，即最多传送70个字。
+
+---------------------
+
+——————————————————————————————————————————————
+58、用算法调整图片的透明度?
+（1）缩小图片尺寸
+
+    将图片缩小到8*8的尺寸，总共64个像素。这一步的作用是去除图片的细节，只保留结构、明暗等基本信息，摒弃不同尺寸、比例带来的图片差异。
+
+    用汉明距离进行图片相似度检测的Java实现 用汉明距离进行图片相似度检测的Java实现
+
+（2）简化色彩
+
+    将缩小后的图片，转为64级灰度。也就是说，所有像素点总共只有64中颜色
+
+（3）计算平均值
+
+    计算所有64个像素的灰度平均值
+
+（4）比较像素灰度
+
+    将每个像素的灰度，与平局值进行比较。大于或等于平局值，记为1；小于平均值记为0
+
+（5）计算哈希值
+
+    将上一步比较结果，组合在一起，就构成了一个64位的整数，这就是这张图片的指纹。组合的次序并不重要，只要保证所有图片都采用同样的次序就好了。
+
+    用汉明距离进行图片相似度检测的Java实现 = 用汉明距离进行图片相似度检测的Java实现 = 8f373714acfcf4d0
+
+得到指纹以后，就可以对比不同的图片，看看64位中有多少是不一样的。在理论上，这等同于计算汉明距离。如果不相同的数据位超过5位，就说明两张图片很相似；如果结果大于10，就说明这是不同的图片。
+——————————————————————————————————————————————
+59、如何将SQLite数据库(dictionary.db文件)与apk文件一起发布?
+可以将XX.db文件复制到Eclipse Android工程中的res\raw目录中，如图1所示。所有在res\raw目录中的文件不会被压缩，这样可以直接提取该目录中的文件
+——————————————————————————————————————————————
+60、sqlite的用处及用法, 哪里用过?
+SQLite数据库通过数据库级上的独占性和共享锁来实现独立事务处理。
+
+
+　　使用CREATE命令可以创建表，CREATE命令的一般格式为：
+
+　　CREATE [TEMP/TEMPORARY] TABLE table_name (column_definitions [, constraints]);
+2插入记录
+
+　　使用INSERT命令可以一次插入一条记录，INSERT命令的一般格式为：
+
+　　INSERT INTO tab_name (column_list) VALUES (value_list);
+3更新记录
+
+　　使用UPDATE命令可以更新表中的记录，该命令可以修改一个表中一行或者多行中的一个或多个字段。UPDATE命令的一般格式为：
+
+　　UPDATE tab_name SET update_list WHERE predicate;
+4删除记录
+
+　　使用DELETE命令可以删除表中的记录，DELETE命令的一般格式为：
+
+　　DELETE FROM table_name WHERE predicate;
+.5查询记录
+
+　　SELECT命令是查询数据库的唯一命令。SELECT命令也是SQL命令中最大、最复杂的命令。
+
+　　SELECT命令的通用形式如下：
+
+　　SELECT?[distinct]?heading?
+
+　　FROM?tables?
+
+　　WHERE?predicate?
+
+　　GROUP?BY?columns?
+
+　　HAVING?predicate?
+
+　　ORDER?BY?columns?
+
+　　LIMIT?count,offset
+
+---------------------
+
+在javaWeb用过
+——————————————————————————————————————————————
+61、sqlite，修改，添加字段，版本更新，排序，默认排序?
+update（）    insert（） onUpgrade    sort（）  默认排序是升序，
+——————————————————————————————————————————————
+62、如何建一个“aaa.db”数据库，如何建一个user表；写出增删改查语句?
+create database 数据库名称
+on
+(
+name='aaa',
+filename='aaa.dbf',
+size=初始大小，
+maxsize=存储上限，
+filegrowth=增长增量
+)
+
+Create Table user
+(
+UserID Int,
+UserName Varchar(32),
+UserAge Int
+...
+)
+Select * From user--查询
+Update user --修改
+Set UserName = 'Adam'
+Where UserID = '001'
+Insert into user--新增
+Select '004','Rachel','20'...
+Delete user --删除
+WHere UserID = '004'
+——————————————————————————————————————————————
+63、如何将打开res raw目录中的数据库文件?
+在Android中不能直接打开res /raw目录中的数据库文件，而需要在程序第一次启动时将该文件复制到手机内存或SD卡的某个目录中，
+
+然后再打开该数据库文件。
+
+复制的基本方法是使用getResources().openRawResource方法获得res/raw目录中资源的 InputStream对象，
+
+然后将该InputStream对象中的数据写入其他的目录中相应文件中。
+
+在Android SDK中可以使用SQLiteDatabase.openOrCreateDatabase方法来打开任意目录中的SQLite数据库文件。
+——————————————————————————————————————————————
+64、DDMS和TraceView的区别?
+DDMS：
+
+DDMS 【Dalvik Debug Monitor Service】是安卓（android）开发环境中的Dalvik虚拟机调试监控服务。
+
+DDMS能够提供：测试设备截屏，针对特定的进程查看正在运行的线程以及堆信息、Logcat、广播状态信息、模拟电话呼叫、接收SMS、虚拟地理坐标等。
+
+TraceView ：
+
+Traceview是安卓（android）平台配备的性能分析的工具。
+
+可以通过图形化让了解要跟踪的程序的性能，并且能具体到方法(method)。
+
+DDMS和TraceView的区别：
+
+　　DDMS是一个程序执行查看器，在里面可以看见线程和堆栈等信息，而TraceView是程序性能分析器。
+——————————————————————————————————————————————
+65、java中如何引用本地语言?
+编写带有native声明的方法的java类
+·使用javac命令编译所编写的java类
+·使用javah ?jni java类名生成扩展名为h的头文件
+——————————————————————————————————————————————
+66、ListView切换奇偶行背景色?
+我们都知道每个listView都有适配器。我们可以自定义一个适配器，在它的getView方法中这样设置。
+@Overridepublic View getView(int position, View convertView, ViewGroup parent) { 	if (position % 2 == 0) {		convertView.setBackgroundColor(Color.parseColor("#b3FFFFFF"));	} else {		convertView.setBackgroundColor(Color.parseColor("#b3FAFAFA"));	}
+
+---------------------
+
+——————————————————————————————————————————————
+67、getView()方法中判断position的奇偶性, 然后给ConvertView设置背景色?
+@Overridepublic View getView(int position, View convertView, ViewGroup parent) { 	if (position % 2 == 0) {		convertView.setBackgroundColor(Color.parseColor("#b3FFFFFF"));	} else {		convertView.setBackgroundColor(Color.parseColor("#b3FAFAFA"));	}
+
+---------------------
+——————————————————————————————————————————————
+68、EditText单行显示?
+要控制EditText单行显示需要同时设置android:singleLine="true"和android:maxLines="1"；
+——————————————————————————————————————————————
+69、throw与throws区别?
+1、throw是在代码块内的，即在捕获方法内的异常并抛出时用的；
+
+2、throws是针对方法的，即将方法的异常信息抛出去
+
+3、可以理解为throw是主动（在方法内容里我们是主动捕获并throw的），而throws是被动（在方法上是没有捕获异常进行处理，直接throws的）
+——————————————————————————————————————————————
+70、LOST.DIR?
+
+LOST.DIR是专门收集Android系统运行时意外丢失的文件而设置的文件夹，其收集的内容包括系统因为意外而没能保存的各类 内存 、交换、暂存等数据， 软件 的缓存数据、以及其他各类文件。只要系统发生意外(如软件突然无法正常运行)，便会将发生意外的文件移到此目录下，以数字序列名称代替该文件的扩展名。注意：由于LOST.DIR文件夹的特殊作用，里面的文件都是“意外而生”，因此可以删除里面的文件，但请不要删除LOST.DIR文件夹。
+
+2
+由此可以看出，如果你的文件意外丢失的话，是可以通过lost.dir文件夹来找回的。所以说，用户在使用手机的过程中，千万不要误删了lost.dir文件夹哦!
+——————————————————————————————————————————————
+71、设置界面怎么做的?
+通过写布局实现
+——————————————————————————————————————————————
+72、ui效果图介绍布局?
+1. View的概念
+
+
+
+    1.1 用来显示数据、影像或是其他信息的组件，组件全部继承与View
+        ViewGroup是一种View容器，本身也是一种View，但是可以包含View及其他ViewGroup组件的View，
+        例如: LinearLayout，ViewGroup继承自View，所以ViewGroup is-aView的观念，只是
+             ViewGroup有容器的特色。
+    1.2 UI组件都放在android.widget包，android.view包中，
+
+    1.3 UI编程方式
+        1.3.1 通过java代码创建view
+        1.3.2用xml文件(ui语言)--用的比较多
+
+---------------------
+2. 布局对象
+ 2.1 在activity引用layout：  
+     
+   protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_login);   //加载要显示的内容   
+        };  
+        Activity就是布满整个窗口或者悬浮于其他窗口上的交互界面
+        一般一个Activity都有一个以上的layout，用于摆放要显示的组件
+
+
+    2.2 常用的布局
+        [x] 线性:LinearLayout
+        [x] 表格:TableLayout
+        [x] 相对:RelativeLayout
+        [ ] 帧(框架布局):FrameLayout
+        [ ] 绝对:AbsoluteLayout
+        以上布局都可以嵌套使用
+
+---------------------
+3. xml 常用属性
+
+
+
+3.1 需要在Activity的onCreate方法中调用setContentView(R.layout.main)获取xml中的（值）
+    1. 长度单位：px，像素，表示屏幕的实际像素，比如320*480  (很少用)
+    2. dp(dip) 是屏幕的物理尺寸， 大小为1英寸的1/72 (sp与刻度无关的像素)，
+       技巧：长度和高度： 可以选择dp/sp, 如果是字体的话，用sp
+    3. android:layout_width="wrap_content"   // 宽度：内容有多少它就多宽
+       android:layout_height="match_parent"  // 高度：界面有多高它就多高
+
+    4. layout_margin: 是控件边缘相对于父空间的边距，有top,buttom,left,right
+       (注意哦，如果选择了对齐方式，比如居中对齐，margin=0dp时，是以中间为开始的，不是从手机的顶部开始的)
+    5. layout_padding: 是控件内容相对于空间边缘的边距
+    6. layout_gravity : 设置组件相对容器(layout)的对齐方式
+    7. gravity: 设置View组件(即是控件中内容)的对齐方式
+    8. "wrap_content" ： 根据内容的大小而定
+    9. "match_parent" 和fill是一样的，刚好显示空间中的内容
+   10. android:layout_weight: 各个空间在布局中的比重
+   11. @+id/test :为组件设定id 
+
+---------------------
+4. 线性布局
+
+
+
+4.1 掌握点
+    0，控件是依次一个一个的摆放
+    1，在xml文件中通过<LinearLayout></LinearLayout>来表示
+    2，分为垂直和水平布局特性，每行每列只能有一个组件
+    3，子view中的gravity属性和weight属性
+    4，layout_weight：layout中控件在某个方向上的占用比例
+    5，线性布局是可以嵌套
+
+---------------------
+
+
+——————————————————————————————————————————————
+73、login模块怎么做的?
+login模块说明：
+activity
+
+
+AboutActivity  关于
+AccountBindListActivity 描述
+AccountSafeActivity 账户与安全
+BindAccountActivity 绑定手机号或邮箱
+ChangePhoneEmailActivity 更换手机，邮箱界面
+ChangePwdActivity  ChangePwd
+ChangePwdByEmailActivity 通过邮箱修改密码
+ChangePwdByPhoneActivity 通过手机修改密码
+FindPwdByEmailActivity 通过邮箱找回密码
+FindPwdByMobileActivity 通过手机号找回密码
+InputVerycodeActivity 输入验证码
+LoginActivity 登录界面
+PrivacyActivity 
+RegByEmailActivtiy 邮箱注册
+RegByMobileActivity  手机号注册
+SetPersonalInfoActivity  填写个人资料
+SetPwdActivity 设置密码
+UserInstructionsActivity 用户使用协议
+WebViewActivity 公用webview界面
+
+
+
+
+api 网络请求接口
+
+
+
+callback 回调
+
+
+
+constant 静态常量
+
+
+
+delete 引用到其他模块的类 ，关联之后删除
+
+
+
+manager 工具类
+
+
+
+model 实体类
+
+
+
+utils 工具类
+
+
+
+version 版本升级
+
+
+
+view 自定义view
+
+---------------------
+
+——————————————————————————————————————————————
+74、点击登录按钮的时候，会从server端获得什么？传送什么?
+
+——————————————————————————————————————————————
+75、android客户端如何实现自动登录?
+触发记住密码之后存入本地数据库SQLite，而触发自动登录的时候，每次启动程序就从本地数据库表获取那条你要自动登录的ID和密码数据，拿出来进行连接服务器的匹配。。程序的开始应该有两个（或者可归为一个）标志值，一个是触发记住密码的标志，一个是自动登录的标志，写入数据库记录，每次开启程序的时候读取这两个值，若是真，则进行以上操作。
+——————————————————————————————————————————————
+76、版本更新，从server端获得什么，通过什么进行更新?
+——————————————————————————————————————————————
+77、Fragment和Activity之间的联系?
+因为Fragment和Activity是可以通信的，Fragment是一种控制器对象，Activity可以委派它完成一个任务，这些任务通常就是管理用户界面（Activity通过findFragmetById获得Fragment的一个实例，Fragment通过getActivy获得Activity的实例和Context）。 
+Activity知道如何管理Fragment，因此Fragment的使用需要Activity的支持，使得Fragment的生命周期和Activity的生命周期非常像，很多方法名称都和Activity是一样的。
+
+---------------------
+Fragment相对Activity添加的回调方法 
+onAttach()：当fragment和activity建立关联的时候调用 
+onCreateView()：为fragment创建视图调用，在onCreate之后 
+onActivityCreated()：确保与fragment相关联的activity一定已经创建完毕的时候调用 
+onDestroyView()：当与fragment关联的视图被移除的时候调用 
+onDetach()：当fragment与activity解除关联时调用
+
+onAttach()与onDetach()是一组 
+onCreateView()与onDestroyView()是一组
+
+---------------------
+
+——————————————————————————————————————————————
+78、Fragment如何实现Activity跳转,你怎么处理Fragment之间的信息交互?
+二、从当前的fragment跳转到一个activity中 
+由于fragment可以使用 getActivity() 访问Activity实例
+信息交互：1.在相应fragment全局中声明fragment管理对象及事务对象。
+	2.在OnCreate方法中初始化fragment管理对象
+	3．从 FragmentManager 获得一个FragmentTransaction实例
+		在另外一个fragment中(myJDEditFragment)使用getArguments()可以拿到bundle对象。
+——————————————————————————————————————————————
+79、fragment在哪个方法里实现代码?
+onCreateView（）
+——————————————————————————————————————————————
+80、res和assets资源文件的作用分别是什么，怎么读取?
+主要的资源文件是放在res文件夹里面的。assets文件夹是存放不进行编译加工的原生文件，即该文件夹里面的文件不会像xml，java文件被预编译，可以存放一些图片，html，js, css等文件。
+-----------------------------------------------------------------
+res：引用资源
+ ? assets文件夹里面的文件都是保持原始的文件格式，需要用AssetManager以字节流的形式读取文件。
+?? ? ?1. 先在Activity里面调用getAssets() 来获取AssetManager引用。
+?? ? ?2. 再用AssetManager的open(String fileName, int accessMode) 方法则指定读取的文件以及访问模式就能得到输入流InputStream。?
+?? ? ?3. 然后就是用已经open file 的inputStream读取文件，读取完成后记得inputStream.close() 。
+?? ? ?4.调用AssetManager.close() 关闭AssetManager。
+
+---------------------
+
+——————————————————————————————————————————————
+81、相册缩略图是怎么实现的?
+服务端用代码将上传的原图制作成缩略图的。
+
+QListWidget实现图片缩略图形式的列表
+——————————————————————————————————————————————
+82、下拉刷新的实现思路，反弹的效果是怎么实现的?
+*首先用枚举确定类型,是正常,下拉,还是刷新
+**将要移动到控件到父view 上, 使用kvo监听,得到scroll的变化,关键是通过scrollView.contentOffSet.y,通过判断它的改变,判断是哪种状态.
+这里是当它是正常状态下需要判断上一状态,从而做出不同的需求
+** 最后要移除
+
+动画的反弹效果:　
+	1、边界判断加步长
+　　2、清除没有用的定时器
+　　3、在外层函数需要传参的时候，可以在里面在嵌套一层函数，避免作用域的累积。
+　　4、把定时器的返回值存储在元素的自定义属性上，防止全局变量冲突和同一时间多个动画执行
+——————————————————————————————————————————————
+83、自定义的View?
+三种实现方式
+一、自绘控件 二、组合控件 三、继承控件 
+——————————————————————————————————————————————
+84、自定义控件用过哪些？对自定义控件是怎么看的?
+Buttn TextView   View       可以更好实现想要实现的效果图
+——————————————————————————————————————————————
+85、瀑布流的实现思路?
+实现瀑布流，只需要重写 UICollectionViewLayout 类的3个方法：
+（1）prepare
+（2）如果是自己来计算cell的frame之后一定要重写此方法返回collectionView的真实滚动范围- (CGSize)collectionViewContentSiz
+（3）调用UIScrollerView的代理方法：屏幕正在滚动中都会调用此方法(void)scrollViewDidScroll:
+
+——————————————————————————————————————————————
+86、聊天窗口的实现?
+1、要实现输入框的功能栏，同时要实现功能栏的切换和键盘弹出之间的顺滑过度，我们需要知道一个关键值，即键盘高度。
+	我们选择通过顶起式来获取键盘高度，覆盖式来实现聊天界面的键盘弹出方式。
+    		A 首先是键盘弹出的时机B 键盘高度的计算
+2、接下来是ListView实现三种视图，一种是文字，一种是语音，一种是图片，我们通过adapter的两个关键方法来实现
+   public int getItemViewType(int position)	   //返回当前item的类型
+    public int getViewTypeCount()//返回item类型的个数
+3、然后是缓存策略，由于图片是本地图片，为了提高图片的加载效率，采用内存缓存加磁盘缓存，这里使用的是我自己封装的ImageLoader，把原来的网络获取改为本地获取。
+4、自定义视图  
+--自定义圆角ImageView
+--自定义录音控件
+--自定义语音播放控件
+——————————————————————————————————————————————
+87、android的dvm和Linux进程是一样的吗?
+可以认为是同一个概念。
+Dalvik虚拟机允许多个instance的存在。实际上android中的每一个app都是运行在自己VM实例之中(沙盒)。每一个VM实例在linux中又是一个单独的进程，所以可以认为是同一个概念。运行在自己的DVM进程之中，不同的app不会相互干扰，且不会因为一个DVM的崩溃导致所有的app进程都崩溃。
+
+---------------------
+——————————————————————————————————————————————
+88、监听模式?
+回调模式
+观察者模式
+——————————————————————————————————————————————
+89、如何刷新view?
+两种方式刷新：
+
+1.主线程可以直接调用Invalidate()方法刷新
+
+2.子线程可以直接调用postInvalidate()方法刷新。
+
+3.API的描述是这样的 : Invalidatethe whole view. If the view is visible, onDraw(Canvas) will be called at somepoint in the future. This must be called from a UI thread. To call from anon-UI thread, call postInvalidate().。当Invalidate()被调用的时候，View的OnDraw()就会被调用，Invalidate()必须是在UI线程中被调用，如果在新线程中更新视图的就调用postInvalidate()。
+——————————————————————————————————————————————
+90、如果一个屏幕可以显示20条数据，但服务器只有4条数据，他创建了几个item?
+
+——————————————————————————————————————————————
+91、viewPager左右切屏?
+1、下载来Android SDK & AVD manager的更新：Available Packages -> Android Repository -> Android Compatibility Package, revision 3. 它将安装在\extras\android\compatibility\v4文件下
+
+2、建立一个Android项目，在上述安装目录下把 android-support-v4.jar添加进项目，如果是最新的ADT，只需要右击project->Android Tools->Add Compatibility Library
+
+3、在Activity中使用ViewPager
+
+4、如果ViewPager是用xml去定义的，需要写上全局的路径
+5、建立一个PagerAdapter，实现如下方法： 
+getCount(), instantiateItem(), destroyItem()， isViewFromObject() 。 
+总上所述，贴上俺的代码，我们发现，可以很快很简单的实现左右两个屏幕的切换 
+---------------------
+
+——————————————————————————————————————————————
+92、viewPager左右切屏的时候和listview上下拖动会不会发生冲突，如果会是怎么解决的?
+ListView中嵌套ViewPage有或者滑动手势冲突解决
+在listview 上使用 addHeaderView 在第一栏添加 viewpager 当做header
+
+当触发 滑动事件 的时候容易引起 滑动冲突 (比如斜着滑动viewpager 的时候 listview会跳动)
+特别是在 下拉刷新或者上拉加载 的时候 , 组件可能会传递到viewpager当中
+——————————————————————————————————————————————
+93、ViewPager有几个子View?
+
+——————————————————————————————————————————————
+94、listview加载图片错位，什么原因导致的?
+listview中view复用并异步加载图片时，有可能滚出屏幕的图片加载过慢，导致回收利用的view会显示前面还没有加载完的图片，这样就出现了图片错位
+——————————————————————————————————————————————
+95、ListView中条目中显示webView会怎么样?
+加载很慢
+——————————————————————————————————————————————
+96、用listview进行快速翻页，如何解决内存溢出?
+比方说在加载各种图片的时候，listview不及时回收的话，可能会造成内存溢出，这个时候就是看getview方法的时候了。
+
+public View getView(int position, View convertView, ViewGroup parent) {
+? ? ??
+? ? ? 
+	ViewHolder holder = null;
+? ? ?
+	 if(convertView == null){
+
+	 // 不存在则加载新布局
+	 LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+	 convertView = inflater.inflate(R.layout.item_pic_list, null);
+	holder = new ViewHolder();
+
+	holder.text = (TextView) convertView.findViewById(R.id.item_title);
+
+	holder.image = (ImageView) convertView.findViewById(R.id.item_image);
+	convertView.setTag(holder);
+
+	 } else {
+
+	 // 存在则加载原来布局，布局重用，无需重复加载
+
+	holder = (ViewHolder) convertView.getTag();
+
+	}
+
+	int no = position + 1;
+
+	holder.text.setText("图片列表测试：" + no);
+	// ir是i5suoi库中ImageResource的实例，专门负责单例加载图片资源，并及时释放长时间不用的图片内存
+	// 先设置成默认图片，以便能够将列表中不显示在屏幕上的图片及时回收	holder.image.setImageBitmap(ir.getBitmap(getResources(), R.drawable.ic_launcher));
+	// 加载并显示网络图片，每个图片只加载一次，然后存到本地缓存
+
+	ir.getBitmap(holder.image, pic.replace("_num", "" + no % 60),
+
+	holder.image.getWidth(), holder.image.getHeight());
+
+	 return convertView;
+ }
+
+---------------------
+
+
+——————————————————————————————————————————————
+97、listview快速滑动时，加载几条数据?
+
+——————————————————————————————————————————————
+98、写出Socket服务器与客户端交互的代码和实现思路?
+首先创建客户端程序：
+try{
+	Socket socket=new Socket("127.0.0.1",9000);//向本机的9000端口发出客户请求
+	System.out.println("客户端开启");
+	//InputStreamReader是字节流通向字符流的桥梁，从底层流读取字节
+	BufferedReader in=new BufferedReader(new InputStreamReader(System.in));
+  //BufferedReader 从字符输入流中读取文本
+	PrintWriter os=new Printriter(socket.getOutputStream());//getOutputStream()返回此套接字的输出	流String readline;
+	readline=in.readLine();
+	while(!readline.equals("bye"))//若读入的字符串为bye，就停止循环{
+	os.println(readline);//将读入的字符串输出到
+	Serveros.flush();//刷新输出流，使Server马上收到该字符串
+	readline=in.readLine();
+}
+os.close();//关闭Socket输出流socket.close();//关闭Socket
+	}catch(IOException e){
+		System.out.println("error:"+e);
+	}
+}
+
+---------------------
+
+本文来自 QQ玉 的CSDN 博客 ，全文地址请点击：https://blog.csdn.net/qinyf2015/article/details/53509308?utm_source=copy 
+然后创建服务器端程序：
+
+try{
+	ServerSocket server=new ServerSocket(9000);//在端口9000监听客户请求
+	System.out.println("服务已开启");
+	Socket socket=server.accept();//使用accept()阻塞等待客户请求
+	System.out.println("接收到客户端的访问");
+	BufferedReader is=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+	String line=" ";while(line!=null&&!line.equals("bye")){line=is.readLine();
+	System.out.println("Server:"+line);
+}
+	is.close();
+	socket.close();
+	server.close();
+	}catch(IOException e){
+	System.out.println("error:"+e);
+	}
+}
+
+运行时有个先后顺序，要先运行服务器端的程序，再运行客户端的程序
+---------------------
+
+——————————————————————————————————————————————
+99、谈谈对Http的理解它的优点，缺点都有哪些；访问网络的方式，请求头，服务器是如何响应的?
+HTTP请求信息由3部分组成：
+1、请求方法（GET/POST）、URI、协议/版本
+2、请求头(Request Header)
+3、请求正文
+
+（1）请求方法、URI、协议/版本
+请求的第一行是“方法、URL、协议/版本”：
+
+（2）请求头(Request Header)
+请求头包含许多有关的客户端环境和请求正文的有用信息。例如，请求头可以声明浏览器所用的语言，请求正文的长度等。
+
+http响应格式
+HTTP应答与HTTP请求相似，HTTP响应也由3个部分构成，分别是：
+1.状态行
+2、响应头(Response Header)
+3、响应正文
+——————————————————————————————————————————————
+100、什么是接口？Android中有哪些机制是基于接口编程？
+面向接口编程是面向对象编程的一种实现方式，它的核心思想是将抽象与实现分离，从组件的级别来设计代码，达到高内聚低耦合的目的。
+Android面向接口编程，策略模式
+——————————————————————————————————————————————
+101、Android每个进程分配的内存是多少?
+在32位操作系统中，进程的地址空间为0到4GB，
+----------------------------------------------------------------------
+Stack空间（进栈和出栈）由操作系统控制，其中主要存储函数地址、函数参数、局部变量等等，所以Stack空间不需要很大，一般为几MB大小。
+Heap空间的使用由程序员控制，程序员可以使用malloc、new、free、delete等函数调用来操作这片地址空间。Heap为程序完成各种复杂任务提供内存空间，所以空间比较大，一般为几百MB到几GB。正是因为Heap空间由程序员管理，所以容易出现使用不当导致严重问题。
+
+---------------------
+
+——————————————————————————————————————————————
+102、都使用过那些第三方平台?
+——————————————————————————————————————————————
+103、一个不同公司用一个APP的思路,有同一行业的100家公司业务流程全都不同要做一个app供他们办公使用请你给出思路?
+——————————————————————————————————————————————
+104、平台兼容性,各个厂家生产的手机之中都有定制的模块怎么做到它们的兼容请提供思路?
+——————————————————————————————————————————————
+105、重复登录怎么解决比如两台设备同时登录一个账号?
+——————————————————————————————————————————————
+106、是每次获取图片都用AsyncTask获取吗?
+——————————————————————————————————————————————
+107、用户体验度：获取数据之前等待的时间是怎么做的?
+——————————————————————————————————————————————
+108、从网络获取图片的大概思路?
+——————————————————————————————————————————————
+109、是否做过视频类,关于视频播放使用的什么方式，大量耗时操作使用哪种方式,为什么?
+——————————————————————————————————————————————
+110、谈谈递归?
+——————————————————————————————————————————————
+111、写出Activity里的方法都是在什么情况下执行?
+——————————————————————————————————————————————
+112、dp与sp的区别?
+长度宽度的数值要使用dp作为单位放入dimens.xml文件中
+字体大小的数值要使用sp作为单位,也放入dimens.xml文件中
+
+使用sp作为字体大小单位,会随着系统的字体大小改变
+而dp作为单位则不会.
+——————————————————————————————————————————————
+113、Java线程实现方式和区别?
+在程序开发中用到多线程，正统的方法是使用Runnable接口，相比继承Thread类，Runnable接口有以下两点好处
+1、避免单继承机制的局限，一个类可以实现多个接口
+2、适用于资源的共享
+---------------------------------------
+创建线程时要继承Runnable接口 
+  不要把宝贵的单继承机会占有掉 
+  两种方式有点不用，实现Runnable 
+  接口时多个线程中执行一个 
+  Runnable接口实现类时，run方法资源共享 
+  而继承Thread时，run方法资源是 
+  不能共享的！ 
+--------------------------------------
+——————————————————————————————————————————————
+114、Android中布局、区别、应用场景?
+1.线性布局（LiearLayout）: 屏幕垂直或水平方向布局。
+线性布局在开发中使用最多，具有垂直方向与水平方向的布局方式，通过设置属性“android:orientation”控制方向，属性值垂直（vertical）和水平(horizontal)，默认水平方向。
+2.帧布局（FrameLayout）：控件从屏幕左上角开始布局。百度地图的布局
+3.相对布局（RelativeLayout）: 以其他控件为参照布局。
+我们用LinearLayout来实现一个简单的布局但又使用了过多的嵌套时，就可以考虑使用RelativeLayout重新布局。
+4.绝对布局（AbsoluteLayout）：以屏幕坐标布局。
+绝对布局也叫坐标布局，指定控件的绝对位置，简单直接，直观性强，但是手机屏幕尺寸差别较大，适应性差
+5.表格布局（TableLayout）：按照行列方式布局。
+表格布局继承自LinearLayout，通过TableRow设置行，列数由TableRow中的子控件决定，直接在TableLayout中添加子控件会占据整个一行。
+——————————————————————————————————————————————
+115、线程间通讯?
+通信方式：
+1.是通过共享变量，线程之间通过该变量进行协作通信； 
+2.通过队列（本质上也是线程间共享同一块内存）来实现消费者和生产者的模式来进行通信；
+——————————————————————————————————————————————
+116、进程间通讯?
+通信方式：
+共享内存(Shared Memory)
+管道(Pipe)
+消息队列(Message Queue)
+信号(Signal)
+信号量(Semophore)
+——————————————————————————————————————————————
+117、判断网络?
+——————————————————————————————————————————————
+118、网络代理?
+——————————————————————————————————————————————
+119、推送了解吗？推送底层代码掌握吗.?
+——————————————————————————————————————————————
+120、asynctack原理?
+——————————————————————————————————————————————
+121、NDK具体说一下?
+——————————————————————————————————————————————
+122、Service结合代码说一下，原理?
+——————————————————————————————————————————————
+123、当内存不足时，如何对尚未关闭的应用程序进行回收?
+——————————————————————————————————————————————
+124、service的运行级别?
+CentOS 6.5中service的Runlevel有2，3，4，5四个级别
+——————————————————————————————————————————————
+125、service如何一直保持在后台运行?
+1.把service和activity分开，让service开机启动。设置一个broadcast receiver接受开机信号，使用RECEIVE_BOOT_COMPLETED的permission， 然后启动service。activity启动后绑定到service上，通过ipc机制通信，acitivity结束后松绑。注意安装后要手动启动service，不会自动启动，之后重启手机后才会随开机启动。  
+
+2. 在内存低的时候系统会自动清理进程，这时候后台service可能会被杀掉。可以在onStartCommand中返回START_STICKY，这样系统有足够多资源的时候，就会重新开启service。  
+
+3.以上不需要NDK，直接用SDK开发就可以了。
+——————————————————————————————————————————————
+126、service的启动方式?
+——————————————————————————————————————————————
+127、软引用怎么用？为什么要用软引用?
+原因：使用SoftReference引用的对象会有很长的生命周期，只有当系统的内存不足的时候，才会去释放这些软引用对象。所以可以使用软引用来缓存一些比较昂贵的资源，比如获取的网络图片数据。
+使用：
+ 1.SoftReference 的特点是它的一个实例保存着一个 Java 对象的软引用，该软引用的存在不妨碍垃圾收集器线程对该 Java 对象的回收。
+2.对于MyObject 对象，有两个引用路径，一个是来自 aSoftRef对象的软引用，一个来自变量 aRef 的强引用，所以 MyObject对象是强可及对象
+3. MyObject 对象成为了软可及对象。如果垃圾收集线程进行内存垃圾收集，并不会因为有一个 SoftReference 对该对象的引用而始终保留该对象
+——————————————————————————————————————————————
+128、还有一个Service是建立在哪个线程上面?
+　Service:Service 是android的一种机制,当它运行的时候如果是LocalService,那么对应的 Service 是运行在主进程的 main 线程上的。
+——————————————————————————————————————————————
+129、即时通讯的实现基于什么协议来实现的？
+TCP/IP协议
+ IM协议，即时通讯协议(Instant Messaging)
+目前IM有四种协议：即时信息和空间协议(IMPP)、空间和即时信息协议(PRIM)、针对即时通讯和空间平衡扩充的进程开始协议SIP(SIMPLE)以及XMPP
+——————————————————————————————————————————————
+130、接口都有哪些内容 ?
+——————————————————————————————————————————————
+131、接口是否可继承接口 ?
+接口可以继承接口，而且支持多重继承。抽象类可以实现(implements)接口。抽象类可继承具体类也可以继承抽象类
+——————————————————————————————————————————————
+132、如何通过程序进行对服务器的接口调用，写出具体过程 ?
+——————————————————————————————————————————————
+133、分页加载需要传递哪些参数 ?
+页数，网络解析的字符串
+——————————————————————————————————————————————
+134、讯飞语音在什么地方用到 ?
+智能机器人、智能语音助手、智能车载、智能玩具、智能翻译机等很多地方都可以用得到。现在用得比较多的就是智能音箱和翻译机，科大讯飞和凝趣科技就把智能语音很好地用在了翻译机上
+——————————————————————————————————————————————
+135、消息推送  ?
+——————————————————————————————————————————————
+136、LBS定位用到哪个地图？为什么要使用这个？实现了哪些功能? 
+导航地图；　LBS服务中关键的核心是位置与地理信息，两者相辅相成，缺一不可，定位精度准确；定位
+——————————————————————————————————————————————
+137、地图中怎样获得附近的信息?
+——————————————————————————————————————————————
+138、百度地图显示周边招聘信息?	
+——————————————————————————————————————————————
+139、若Activity已经销毁，此时AsynTask执行完并且返回结果，会报异常吗?
+当一个App旋转时，整个Activity会被销毁和重建。当Activity重启时，AsyncTask中对该Activity的引用是无效的，
+因此onPostExecute()就不会起作用，若AsynTask正在执行，折会报 view not attached to window manager 异常
+
+同样也是生命周期的问题，
+在 Activity 的onDestory()方法中调用Asyntask.cancal方法，让二者的生命周期同步
+
+---------------------
+——————————————————————————————————————————————
+140、Activity销毁但Task如果没有销毁掉，当Activity重启时这个AsyncTask该如何解决？
+还是屏幕旋转这个例子，在重建Activity的时候，会回掉Activity.onRetainNonConfigurationInstance()重新传递一个新的对象给AsyncTask，
+完成引用的更新
+——————————————————————————————————————————————
+141、Android 线程间通信有哪几种方式（重要）?
+共享内存（变量）；文件，数据库；Handler；Java 里的 wait()，notify()，notifyAll()
+——————————————————————————————————————————————
+142、为什么TCP是可靠的，UDP早不可靠的？为什么UDP比TCP快？
+TCP的可靠保证，是它的三次握手双向机制，这一机制保证校验了数据，保证了他的可靠性。而UDP就没有了，
+udp信息发出后,不验证是否到达对方,所以不可靠。不过UDP的速度是TCP比不了的，而且UDP的反应速度更快，
+QQ就是用UDP协议传输的，HTTP是用TCP协议传输的，不用我说什么，自己体验一下就能发现区别了。
+再有就是UDP和TCP的目的端口不一样（这句话好象是多余的），而且两个协议不在同一层，TCP在三层，UDP不是在四层就是七层。
+——————————————————————————————————————————————
+143、如何实现文件断点上传?
+断点上传需要前端进行文件签名计算，而js进行计算是效率很低的一件事，影响用户体验。
+开始分析腾讯邮箱文件上传:
+1 打开浏览器控制台并上传文件
+2 ftn_hander
+3 等待文件上传完成 
+文件上传完成，并且验证通过，那就上传成功咯，否则就返回错误咯。 
+4 关于断点上传前端兼容性 
+关于兼容性读取文件后需要用到js的blob，但是blob是有兼容性问题的，所以对IE，目测只能写浏览器插件了。
+——————————————————————————————————————————————
+144、Fragment 如何实现类似 Activity 栈的压栈和出栈效果的？
+往Activity中添加Fragment默认是不会添加到任务栈的，不会有Activity那种压栈和出栈的效果
+
+如果要实现这种效果，我们可以通过以下步骤实现：
+
+1.添加Fragment的时候通过fragmentTransaction.addToBBackStack(String)方法，来讲Fragment添加到任务栈中。
+
+
+2.在要退出Fragment的时候，先通过fragmentManager.getBackStackEntryCount()方法获取栈中Fragment的数量。
+
+
+3.如果当前任务栈中的Fragment只有一个的时候，我们按后退键就直接退出Activity。如果数量大于1，
+则调用fragmentManager.popBackStack(String name, int flags)或者fragmentManager.popBackStack(int id, int flags)方法将Fragment弹出栈。
+
+
+
+——————————————————————————————————————————————
+145、如何切换 fragement,不重新实例化?
+
+——————————————————————————————————————————————
+146、启动service的两种方法?有什么区别?
+我们有两种方式启动一个Service,他们对Service生命周期
+的影响是不一样的。
+　1；通过startService：
+　Service会经历onCreate->onStart，
+　stopService的时候直接onDestroy如果是调用者(TestServiceHolder)自己直接退出而没有调用stopService的话，Service会一直在后台运行。下次TestServiceHolder再起来可以stopService。
+　2：通过bindService：
+　Service只会运行onCreate，这个时候TestServiceHolder和TestService绑定在一起
+　　TestServiceHolder退出了，Srevice就会调用onUnbind->onDestroyed所谓绑定在一起就共存亡了。
+　　那有同学问了，要是这几个方法交织在一起的话，会出现什么情况呢？
+　　一个原则是Service的onCreate的方法只会被调用一次，就是你无论多少次的
+startService又bindService，Service只被创建一次。如果先是bind了，那么start的时候就直接运行Service的onStart方法，如果先是start，那么bind的时候就直接运行onBind方法。如果你先bind上了，就
+stop不掉了，对啊，就是stopService不好使了，只能先UnbindService,再StopService,
+所以是先start还是先bind行为是有区别的。
+——————————————————————————————————————————————
+147、Android中的Context, Activity，Appliction有什么区别？
+首先Activity和Application都是Context的子类。Context从字面上理解就是上下文的意思，
+在实际应用中它也确实是起到了管理上下文环境中各个参数和变量的作用，方便我们可以简单的访问到各种资源。
+虽然Activity和Application都是Context的子类，但是他们维护的生命周期不一样。前者维护一个Acitivity的生命周期，
+所以其对应的Context也只能访问该activity内的各种资源。后者则是维护一个Application的生命周期。
+
+---------------------
+——————————————————————————————————————————————
+148、Service 是否在 main thread 中执行, service 里面是否能执行耗时的操作?
+默认情况
+
+  如果没有显示指定service所运行的进程, Service和activity是运行在当前app所在进程的main thread(UI主线程)里面,
+service里面不能执行耗时的操作(网络请求,拷贝数据库,大文件 )
+  broadcast耗时操作为10秒, Activity耗时操作为5秒,
+ Service 20秒  
+要开子线程
+
+ 在子线程中执行 new Thread(){}.start();
+                 12345
+
+Thread.currentThread().getName();
+
+
+特殊情况 
+
+可以在清单文件配置 service 执行所在的进程 ,让service在另外的进程中执行 
+
+---------------------
+
+——————————————————————————————————————————————
+149、支付方式?
+——————————————————————————————————————————————
+150、如果想改变分辨率但不动原来布局，实现思路是什么?
+//使用dimen进行更改数据，进行配置
+——————————————————————————————————————————————
+151、使用dimen进行更改数据，进行配置?
+为了适配不同分辨率的Android机，我们在不同分辨率的value文件夹下面写入了dimen标签。在xml布局文件中引用很简单android:padding="@dimen/dp_20"即可。在java中也可以使用：int width = (int)getResources().getDimension(R.dimen.dp_167);
+
+---------------------
+——————————————————————————————————————————————
+
+
+1，Rxjava+retrofit+mvp  来实现项目
+2，沉浸式状态栏的实现
+3，MVP网络请求的模拟；三方之间的传值
+4，自定义全局tittlebar
+5，刷新和加载的MVP控制
+6，Fragment动态使用
+7，视频播放使用
+8，日夜模式切换
+9，评论效果，评论人和点赞人会在评论区显示
+10，第三方登录和分享
+11，Token了解
+12，开源项目导入注意事项
+13，Moduel导入
+14，Include、viewstube、merge
+15，单例开发中的使用
+16，Debug多种断点方式
+17，string类的大小写，有的服务器是不区分大小写的
+18，清单文件lable项目名称
+19，ANR异常
+20，Android的几种设计模式
+21，对于多线程的理解
+22，启动模式和横竖屏切换
+23，rebuild 与clean 的区别
+24，注解处理器
+25，EventBus Andriod的发布/订阅事件总件
+26，即时通讯集成
+27，Android7.0相机吊起
+28，开发中业务逻辑的抽取
+29，MVP抽取和封装
+30，工具类的创建和使用
+31，资源文件整合
+32，SVN代码管理
